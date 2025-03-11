@@ -1,0 +1,13 @@
+ktor:
+  application:
+    modules:
+      - com.coffeeshop.ApplicationKt.module
+  deployment:
+    port: 8080
+storage:
+  driver: "org.postgresql.Driver"
+  jdbcURL: "jdbc:postgresql://localhost:5432/order_service"
+  user: "postgres"
+  password: "password"
+kafka:
+  host: "localhost:9092"
