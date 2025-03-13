@@ -1,0 +1,18 @@
+replicaCount: 1
+
+image:
+  repository: ktor-order-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 8080
+
+env:
+  DB_URL: "jdbc:postgresql://postgres:5432/orders_db"
+  DB_USER: "admin"
+  DB_PASSWORD: "secret"
+  KAFKA_BROKER: "kafka-cluster-kafka-bootstrap.kafka:9092"
+
+resources: {}

@@ -39,8 +39,18 @@ If the server starts successfully, you'll see the following output:
 2024-12-04 14:32:45.584 [main] INFO  Application - Application started in 0.303 seconds.
 2024-12-04 14:32:45.682 [main] INFO  Application - Responding at http://0.0.0.0:8080
 ```
-# TODO
-- Integration test
-- kotest
-- Testcontainers
-- unit test
+# Helm setup
+
+## Install Postgres
+```
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+helm install postgres bitnami/postgresql --set auth.username=admin,auth.password=secret,auth.database=orders_db
+```
+
+## Install KAFKA
+```
+helm repo add strimzi https://strimzi.io/charts/
+helm repo update
+helm install kafka strimzi/strimzi-kafka-operator --namespace kafka --create-namespace
+```
