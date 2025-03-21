@@ -24,7 +24,7 @@ object OrderProducer {
         })
     }
 
-    fun sendOrderCreatedEvent(order: OrderEvent) {
+    fun sendOrderCreatedEvent(order: OrderPlacedEvent) {
         val message = Json.encodeToString(order)
         val record = ProducerRecord(TOPIC, order.uuid, message)
         producer.send(record)
