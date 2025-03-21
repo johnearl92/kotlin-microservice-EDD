@@ -1,3 +1,4 @@
+```
                    +----------------------+
                    |      CDN (Cloudflare)|
                    +----------+-----------+
@@ -40,3 +41,4 @@
 ✅ Identity Provider – Secure authentication with OAuth2.
 ✅ Observability – Logs via ELK, monitoring via Prometheus & Grafana.
 ✅ CDN – Faster asset delivery.
+```
