@@ -31,8 +31,9 @@ object OrderConsumer {
         while (true) {
             val records = consumer.poll(Duration.ofMillis(100))
             for (record in records) {
-                val order = Json.decodeFromString<OrderCreateDto>(record.value())
-                println("📥 Received OrderCreated event: $order")
+                val orderPlacedEvent = Json.decodeFromString<OrderPlacedEvent>(record.value())
+
+
             }
         }
     }

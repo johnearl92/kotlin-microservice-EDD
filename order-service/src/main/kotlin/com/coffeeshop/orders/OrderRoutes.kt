@@ -14,10 +14,14 @@ fun Route.orderRoutes() {
             call.respond(orderRepo.getAllOrders())
         }
         post {
-            val orderCreateDto = call.receive<OrderCreateDto>()
-            val uuid = orderRepo.addOrder(orderCreateDto)
-            OrderProducer.sendOrderCreatedEvent(orderCreateDto.toOrderEvent(uuid))
-            call.respond(HttpStatusCode.Created, orderCreateDto)
+            try {
+                val orderCreateDto = call.receive<OrderCreateDto>()
+                val uuid = orderRepo.createOrder(orderCreateDto)
+                OrderProducer.sendOrderCreatedEvent(orderCreateDto.toOrderPlacedEvent(uuid))
+                call.respond(HttpStatusCode.Created, mapOf("uuid" to uuid, "order" to orderCreateDto))
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.InternalServerError, "Failed to create order")
+            }
         }
     }
 }

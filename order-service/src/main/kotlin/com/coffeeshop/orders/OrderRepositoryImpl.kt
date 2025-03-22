@@ -1,24 +1,24 @@
 package com.coffeeshop.orders
 
-import com.coffeeshop.orders.Orders.uuid
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class OrderRepositoryImpl: OrderRepository {
 
-    override fun addOrder(order: OrderCreateDto): String = transaction {
-        Orders.insert {
+    override fun createOrder(order: OrderCreateDto): String = transaction {
+        OrderTable.insert {
+            it[id] = java.util.UUID.randomUUID().toString()
             it[coffeeType] = order.coffeeType
             it[quantity] = order.quantity
-            it[uuid] = java.util.UUID.randomUUID().toString()
-        } get uuid
+            it[status] = OrderStatus.PENDING
+        } get OrderTable.id
     }
 
     override fun getAllOrders(): List<OrderDto> = transaction {
-        Orders.selectAll().map {
+        OrderTable.selectAll().map {
             OrderDto(
-                coffeeType = it[Orders.coffeeType],
-                quantity = it[Orders.quantity]
+                coffeeType = it[OrderTable.coffeeType],
+                quantity = it[OrderTable.quantity]
             )
         }
     }

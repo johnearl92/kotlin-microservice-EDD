@@ -1,6 +1,6 @@
 package com.coffeeshop
 
-import com.coffeeshop.orders.Orders
+import com.coffeeshop.orders.OrderTable
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.server.application.*
@@ -33,6 +33,6 @@ fun Application.configureDatabases(config: ApplicationConfig) {
 
 private fun initializeDatabase() {
     transaction {
-        SchemaUtils.create(Orders)
+        SchemaUtils.create(OrderTable)
     }
 }

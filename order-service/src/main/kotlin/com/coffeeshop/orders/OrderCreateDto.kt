@@ -9,7 +9,7 @@ data class OrderCreateDto(
     val quantity: Int
 )
 
-fun OrderCreateDto.toOrderEvent(uuid: String): OrderPlacedEvent {
+fun OrderCreateDto.toOrderPlacedEvent(uuid: String): OrderPlacedEvent {
     return OrderPlacedEvent(
         uuid = uuid,
         coffeeType = this.coffeeType,
