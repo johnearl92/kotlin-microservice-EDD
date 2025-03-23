@@ -1,6 +1,6 @@
 package com.coffeeshop.orders
 
 interface OrderRepository {
-    fun getAllOrders(): List<OrderDto>
+    suspend fun getOrder(id:String): OrderDto
     fun createOrder(order: OrderCreateDto): String
 }

@@ -1,6 +1,9 @@
 package com.coffeeshop.orders.kafka
 
 import com.coffeeshop.orders.OrderCreateDto
+import com.coffeeshop.orders.OrderStatus
+import com.coffeeshop.orders.mongo.Order
+import com.coffeeshop.orders.mongo.OrderDocument
 import io.ktor.server.config.*
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
@@ -25,15 +28,20 @@ object OrderConsumer {
         })
     }
 
-    fun start() {
+    suspend fun start() {
         consumer.subscribe(listOf(TOPIC))
 
         while (true) {
             val records = consumer.poll(Duration.ofMillis(100))
             for (record in records) {
                 val orderPlacedEvent = Json.decodeFromString<OrderPlacedEvent>(record.value())
-
-
+                val order = Order(
+                    orderId = orderPlacedEvent.uuid,
+                    coffeeType = orderPlacedEvent.coffeeType,
+                    quantity = orderPlacedEvent.quantity,
+                    status = OrderStatus.PENDING
+                )
+                OrderDocument.create(order)
             }
         }
     }

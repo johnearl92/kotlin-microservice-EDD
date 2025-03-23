@@ -9,5 +9,9 @@ storage:
   jdbcURL: "jdbc:postgresql://localhost:5432/order_service"
   user: "postgres"
   password: "password"
+  mongo:
+    uri: "mongodb://localhost:27017/?maxPoolSize=20&w=majority"
+    database: "order_service"
+
 kafka:
   host: "localhost:9092"

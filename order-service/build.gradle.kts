@@ -5,6 +5,7 @@ val ktor_expose_version: String by project
 val postgres_version: String by project
 val hikari_connection_pool_version: String by project
 val kotestVersion: String by project
+val mongo_version: String by project
 
 plugins {
     application
@@ -40,6 +41,9 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:$ktor_expose_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$ktor_expose_version")
     implementation("org.postgresql:postgresql:$postgres_version")
+    implementation("org.mongodb:mongodb-driver-core:$mongo_version")
+    implementation("org.mongodb:mongodb-driver-sync:$mongo_version")
+    implementation("org.mongodb:bson:$mongo_version")
     implementation("com.zaxxer:HikariCP:$hikari_connection_pool_version")
 
     implementation("org.apache.kafka:kafka-clients:$kafka_version")
@@ -52,6 +56,7 @@ dependencies {
     testImplementation("io.kotest.extensions:kotest-extensions-testcontainers:2.0.2")
     testImplementation("org.testcontainers:postgresql:1.19.7")
     testImplementation("org.testcontainers:kafka:1.19.7")
+    testImplementation("org.testcontainers:mongodb:1.19.7")
 
     testImplementation("io.ktor:ktor-server-test-host")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")

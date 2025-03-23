@@ -3,6 +3,7 @@ package com.coffeeshop.com.coffeeshop.orders.integration
 import com.coffeeshop.com.coffeeshop.config.ContainersConfig
 import com.coffeeshop.orders.OrderCreateDto
 import com.coffeeshop.orders.OrderDto
+import com.coffeeshop.orders.kafka.OrderConsumer
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.ktor.client.request.*
@@ -10,6 +11,9 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.config.*
 import io.ktor.server.testing.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -17,6 +21,8 @@ class OrderIntegrationTest : StringSpec({
 
     val postgres = ContainersConfig.postgres
     val kafka = ContainersConfig.kafka
+    val mongo = ContainersConfig.mongo
+    var createdOrderId: String? = null
 
     fun ApplicationTestBuilder.setupEnvironment() {
         environment {
@@ -25,6 +31,7 @@ class OrderIntegrationTest : StringSpec({
                 "storage.jdbcURL" to postgres.jdbcUrl,
                 "storage.user" to postgres.username,
                 "storage.password" to postgres.password,
+                "storage.mongo.uri" to mongo.connectionString,
                 "kafka.host" to kafka.bootstrapServers
             ).withFallback(baseConfig)
         }
@@ -41,22 +48,29 @@ class OrderIntegrationTest : StringSpec({
                 setBody(Json.encodeToString(order))
             }
             response.status shouldBe HttpStatusCode.Created
+            val createdOrder = Json.decodeFromString<OrderDto>(response.bodyAsText())
+            createdOrderId = createdOrder.id
         }
     }
 
     "should verify created order" {
         testApplication {
             setupEnvironment()
-
-            val getResponse = client.get("/orders")
-            getResponse.status shouldBe HttpStatusCode.OK
-            val orders = Json.decodeFromString<List<OrderDto>>(getResponse.bodyAsText())
-            orders.any { it.coffeeType == "Espresso" && it.quantity == 2 } shouldBe true
+            launch {
+                // Wait for the OrderConsumer to process the order
+                delay(1000)
+                val getResponse = client.get("/orders/${createdOrderId}")
+                getResponse.status shouldBe HttpStatusCode.OK
+                val order = Json.decodeFromString<OrderDto>(getResponse.bodyAsText())
+                order.coffeeType shouldBe "Espresso"
+                order.quantity shouldBe 2
+            }
         }
     }
 
     afterSpec {
         postgres.stop()
         kafka.stop()
+        mongo.stop()
     }
 })

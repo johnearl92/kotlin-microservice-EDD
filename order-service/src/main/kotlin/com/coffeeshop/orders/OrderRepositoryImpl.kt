@@ -1,5 +1,6 @@
 package com.coffeeshop.orders
 
+import com.coffeeshop.orders.mongo.OrderDocument
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -14,13 +15,8 @@ class OrderRepositoryImpl: OrderRepository {
         } get OrderTable.id
     }
 
-    override fun getAllOrders(): List<OrderDto> = transaction {
-        OrderTable.selectAll().map {
-            OrderDto(
-                coffeeType = it[OrderTable.coffeeType],
-                quantity = it[OrderTable.quantity]
-            )
-        }
+    override suspend fun getOrder(id:String): OrderDto {
+        return OrderDocument.read(id)?.toOrderDto() ?: throw NoSuchElementException("Order not found")
     }
 
 
