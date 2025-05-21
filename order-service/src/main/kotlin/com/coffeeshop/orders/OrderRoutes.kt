@@ -24,8 +24,8 @@ fun Route.orderRoutes() {
         post {
             try {
                 val orderCreateDto = call.receive<OrderCreateDto>()
-                val uuid = orderService.createOrder(orderCreateDto)
-                call.respond(HttpStatusCode.Created, orderCreateDto.toOrderDto(uuid))
+                val orderDto = orderService.createOrder(orderCreateDto)
+                call.respond(HttpStatusCode.Created, orderDto)
             } catch (e: Exception) {
                 logger.error("Failed to get order", e)
                 call.respond(HttpStatusCode.InternalServerError, "Failed to create order")

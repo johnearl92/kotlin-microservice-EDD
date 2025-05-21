@@ -3,7 +3,6 @@ package com.coffeeshop.com.coffeeshop.orders.integration
 import com.coffeeshop.com.coffeeshop.config.ContainersConfig
 import com.coffeeshop.orders.OrderCreateDto
 import com.coffeeshop.orders.OrderDto
-import com.coffeeshop.orders.kafka.OrderConsumer
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.ktor.client.request.*
@@ -13,7 +12,6 @@ import io.ktor.server.config.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 

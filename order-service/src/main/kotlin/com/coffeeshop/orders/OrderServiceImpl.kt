@@ -7,9 +7,9 @@ class OrderServiceImpl(private val orderRepository: OrderRepository) : OrderServ
         return orderRepository.getOrder(id)
     }
 
-    override fun createOrder(orderCreateDto: OrderCreateDto): String {
-        val uuid = orderRepository.createOrder(orderCreateDto)
-        OrderProducer.sendOrderCreatedEvent(orderCreateDto.toOrderPlacedEvent(uuid))
-        return uuid
+    override fun createOrder(orderCreateDto: OrderCreateDto): OrderDto {
+        val order = orderRepository.createOrder(orderCreateDto.toOrder())
+        OrderProducer.sendOrderCreatedEvent(order.toOrderPlacedEvent())
+        return order.toOrderDto()
     }
 }
